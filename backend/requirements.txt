@@ -1,0 +1,5 @@
+flask
+torch
+torchvision
+Pillow==9.0.0
+matplotlib

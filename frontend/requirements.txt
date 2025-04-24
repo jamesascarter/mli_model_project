@@ -1,0 +1,10 @@
+streamlit
+torchvision
+torch 
+streamlit_drawable_canvas
+Pillow==9.0.0
+sqlalchemy
+requests
+opencv-python>=4.8.0
+numpy>=1.23
+psycopg2-binary>=2.9.0

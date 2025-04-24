@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # PyTorch Model/Service Container
+  backend:
+    build:
+      context: ./backend  # Directory where your PyTorch model code is located
+    container_name: backend
+    ports:
+      - "5001:5000"  # Assuming your model runs on port 5000
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
+
+  # Streamlit Web App Container
+  frontend:
+    build:
+      context: ./frontend  # Directory where your Streamlit app code is located
+    container_name: frontend
+    ports:
+      - "8501:8501"  # Streamlit default port
+    depends_on:
+      - db
+    environment:
+      - STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+      - STREAMLIT_WATCHER_TYPE=none
+      - DATABASE_URL=postgresql://postgres:password@db:5432/mydatabase
+    restart: unless-stopped
+
+  # PostgreSQL Database Container
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+volumes:
+  postgres_data:
+
